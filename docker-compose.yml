@@ -1,0 +1,32 @@
+version: '3'
+services:
+  proxy:
+    build:
+      context: .
+      dockerfile: proxy/Dockerfile
+    ports:
+      - 8000:80 # Troque a porta caso seja necessário
+    networks:
+      - corona-tracker-network
+    depends_on:
+      - authentication
+      - tracker
+  authentication:
+    build:
+      context: .
+      dockerfile: authentication/Dockerfile
+    volumes:
+      - ./authentication:/var/www/html
+    networks:
+      - corona-tracker-network
+  tracker:
+    build:
+      context: .
+      dockerfile: tracker/Dockerfile
+    volumes:
+      - ./tracker:/var/www/html
+    networks:
+      - corona-tracker-network
+networks:
+  corona-tracker-network:
+    driver: bridge
